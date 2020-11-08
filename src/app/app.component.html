@@ -1,0 +1,48 @@
+<div class="container mt-3">
+  <form (ngSubmit)="ejecutar(f)" #f="ngForm">
+    <div class="form-row align-items-center">
+      <div class="col-md-3">
+        <label># de Columnas</label>
+        <input [(ngModel)]="datos.columnas" type="number" name="columnas" #columnas="ngModel" class="form-control ">
+      </div>
+      <div class="col-md-3">
+        <label># de Filas</label>
+        <input [(ngModel)]="datos.filas" type="number" name="filas" #filas="ngModel" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <label>Rango Minimo Aleatorio</label>
+        <input [(ngModel)]="datos.rangoMin" type="number" name="rangoMin" #rangoMin="ngModel" class="form-control "
+          id="inlineFormInput">
+      </div>
+      <div class="col-md-3">
+        <label>Rango Maximo Aleatorio</label>
+        <input [(ngModel)]="datos.rangoMax" type="number" name="rangoMax" #rangoMax="ngModel" class="form-control">
+      </div>
+      <div class="col-md-6 mt-2">
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+      </div>
+    </div>
+  </form>
+
+
+  <!-- <p>Form value: {{ f.value | json }}</p> -->
+
+
+  <!-- MATRIZ -->
+  <div class="mt-3" *ngIf="mostrarMatriz">
+    <table class="table ">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fila of arrayFilas">
+          <th>Fila {{fila}}</th>
+          <td *ngFor="let ob of arrayRandom ">{{ob[fila]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
