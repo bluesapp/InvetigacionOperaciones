@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { datos } from './models/datos.model';
+import { TipoDatos } from './models/tipodatos.models';
 
 @Component({
   selector: 'app-root',
@@ -10,38 +11,37 @@ import { datos } from './models/datos.model';
 export class AppComponent implements OnInit {
   // title = 'finalprojectIO';/
   datos = {} as datos;
+  td = {} as TipoDatos;
   mostrarMatriz: boolean = false;
   arrayColumnas: Array<number> = [];
   arrayFilas: Array<number> = [];
   numeroRandom: Array<number> = [];
 
-  arrayRandom: any[] = [];
-
-  // obj: any[] = [
-  //   { 1: 255, 2: 685, 3: 483 },
-  //   { 1: 982, 2: 159, 3: 753 },
-  //   { 1: 951, 2: 632, 3: 478 },
-  //   { 1: 746, 2: 851, 3: 118 }
-  // ]
-
+  // arrayRandom: any[] = [];
+  // arrayLagrnage: any[] = [];
+  array1: any[] = [];
+  resultadoLagrange: number = 1;
+  maximoLagrange: number;
+  filaLagrange: number;
 
 
   ngOnInit() {
+
     this.datos.columnas = 3;
-    this.datos.filas = 5;
+    this.datos.filas = 3;
     this.datos.rangoMin = 1;
-    this.datos.rangoMax = 99;
+    this.datos.rangoMax = 100;
+    this.maximoLagrange = 1;
+    this.td.arrayRandom = [];
   }
 
-  ejecutar(f: NgForm) {
+  ejecutarRandom(f: NgForm) {
+
+    this.resultadoLagrange = f.value.columnas;
+    let nColumnas = 1 / f.value.columnas;
 
     this.arrayColumnas = [];
     this.arrayFilas = [];
-
-    console.log(this.arrayColumnas);
-    console.log(this.arrayFilas);
-
-
 
     this.mostrarMatriz = true;
 
@@ -59,19 +59,49 @@ export class AppComponent implements OnInit {
         obj[first] = this.getRandom(f.value.rangoMin, f.value.rangoMax);
       }
 
-      this.arrayRandom.push(obj)
+      this.td.arrayRandom.push(obj)
+
     }
 
-    this.datos = {} as datos;
-
-
-    console.log(this.arrayRandom);
+    this.td.arrayLagrnage = [...this.td.arrayRandom]
+    this.metotodoLagrange(this.td.arrayLagrnage, nColumnas);
 
   };
 
 
+  ejecutarModelos(g: NgForm) {
+    // console.log(g)
+  }
+
+  metotodoLagrange(arrRan, nCol) {
+
+
+    const sumaObject = arrRan.reduce((a, b) => {
+
+      for (const key in b) {
+        if (b.hasOwnProperty(key))
+          a[key] = parseFloat(((a[key] || 0) + b[key] * nCol).toFixed(2));
+      }
+      return a;
+    }, {});
+
+
+    this.array1 = Object.values(sumaObject)
+    this.maximoLagrange = Math.max(...this.array1)
+    this.filaLagrange = this.array1.indexOf(this.maximoLagrange) + 1;
+    this.td.arrayLagrnage.push(sumaObject)
+  }
+
+
   getRandom(min, max) {
+    console.log(0.003 * (max - min) + min);
+    
     return Math.floor(Math.random() * (max - min) + min);
+  }
+
+  reacargarPagina() {
+    // location.reload(true)
+    location.reload()
   }
 
 }

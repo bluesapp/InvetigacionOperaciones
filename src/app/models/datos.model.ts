@@ -5,3 +5,5 @@ export interface datos {
     rangoMax: number;
     coeficiente: string
   }
+
+
