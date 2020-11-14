@@ -3,7 +3,8 @@ export interface datos {
     filas: number;
     rangoMin: number;
     rangoMax: number;
-    coeficiente: string
+    coeficiente: number;
+    manual: boolean;
   }
 
 

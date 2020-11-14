@@ -3,7 +3,7 @@
     <div class="form-row align-items-center">
       <div class="col-md-3">
         <label># de Columnas</label>
-        <input [(ngModel)]="datos.columnas" type="number" min="2 "name="columnas" #columnas="ngModel" class="form-control ">
+        <input [(ngModel)]="datos.columnas" type="number" min="2 " name="columnas" class="form-control ">
       </div>
       <div class="col-md-3">
         <label># de Filas</label>
@@ -18,25 +18,67 @@
         <label>Rango Maximo Aleatorio</label>
         <input [(ngModel)]="datos.rangoMax" type="number" name="rangoMax" #rangoMax="ngModel" class="form-control">
       </div>
+      <div class="col-md-3 mt-2">
+        <label>Coeficiente Pesimismo</label>
+        <input [(ngModel)]="datos.coeficiente" type="number" name="coeficiente" #coeficiente="ngModel"
+          class="form-control">
+      </div>
+      <div class="col-md-3">
+        <div class="custom-control custom-switch">
+          <input type="checkbox" [(ngModel)]="datos.manual" [checked]="datos.manual" name="manual" #manual
+            class="custom-control-input" id="customSwitch1">
+          <label class="custom-control-label" for="customSwitch1">Datos Manuales</label>
+        </div>
+      </div>
       <div class="col-md-6 mt-2">
         <button type="submit" class="btn btn-primary mb-2">Submit</button>
       </div>
     </div>
   </form>
 
-  <div class="col-md-6 mt-2">
+
+  <div class="col-md-6 mt-4">
     <button (click)="reacargarPagina()" type="button" class="btn btn-secondary" *ngIf="mostrarMatriz">Nuevo</button>
   </div>
 
+  <!-- Tabla Manual -->
+  <div *ngIf="mostrarMatriz && datos.manual">
+    <form (ngSubmit)="prueba(h.value)" #h="ngForm">
+      <h4 class="display-6">Matriz Aleatoria:</h4>
+      <table class="table table-bordered jumbotron">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fila of arrayFilas, let col=index">
+            <th>Fila {{col+1}}</th>
+            <td *ngFor="let obj of td.arrayRandom, let fil=index"><input (ngModel)="marrayRandom" type="number"
+                name="{{fil+1}}{{col}}" class="form-control col-xs-4
+                "></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="col-md-6 mt-2">
+        <button type="submit" class="btn btn-warning mb-2">Submit</button>
+      </div>
+    </form>
+  </div>
 
-  <!-- <p>Form value: {{ f.value | json }}</p> -->
 
-<hr>
-  <!-- MATRIZ -->
-  <h4 class="display-6" *ngIf="mostrarMatriz">Matriz:</h4 >
-  <div *ngIf="mostrarMatriz">
+
+
+
+
+
+
+
+  <div *ngIf="mostrarMatriz && !datos.manual">
     <form (ngSubmit)="ejecutarModelos(g.value)" #g="ngForm">
-      <table class="table jumbotron jumbotron-fluid">
+      <h4 class="display-6">Matriz Aleatoria:</h4>
+      <table class="table table-bordered jumbotron">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -47,24 +89,17 @@
           <tr *ngFor="let fila of arrayFilas">
             <th>Fila {{fila}}</th>
             <td *ngFor="let obj of td.arrayRandom">{{obj[fila]}}</td>
-            <!-- <input [(ngModel)]="arrayRandom" type="number" name={{obj[fila]}}
-                #{{obj[fila]}}="ngModel" class="form-control " value={{obj[fila]}}> -->
           </tr>
         </tbody>
       </table>
-      <!-- <div class="col-md-6 mt-2">
-        <button type="submit" class="btn btn-primary mb-2">Submit</button>
-      </div>
-      <div class="col-md-6 mt-2">
-        <button type="submit" class="btn btn-primary mb-2">Submit</button>
-      </div> -->
+
     </form>
   </div>
 
-  <h4 class="display-6" *ngIf="mostrarMatriz">Metodo de Lagrange:</h4 >
+  <h4 class="display-6" *ngIf="mostrarMatriz">Metodo de Lagrange:</h4>
   <div *ngIf="mostrarMatriz">
     <form (ngSubmit)="ejecutarModelos(g.value)" #g="ngForm">
-      <table class="table jumbotron jumbotron-fluid">
+      <table class="table table-bordered jumbotron">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -83,11 +118,12 @@
       <!-- <div class="col-md-6 mt-2">
         <button type="submit" class="btn btn-primary mb-2">Submit</button>
       </div> -->
-    </form>
 
+    </form>
     <div class="alert alert-primary col-md-6" role="alert">
       El valor maximo de Lagrange es {{maximoLagrange}} en la fila {{filaLagrange}}
     </div>
+
   </div>
 
 </div>
