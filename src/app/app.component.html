@@ -37,13 +37,13 @@
   </form>
 
 
-  <div class="col-md-6 mt-4">
+  <div class="col-md-6 mt-2">
     <button (click)="reacargarPagina()" type="button" class="btn btn-secondary" *ngIf="mostrarMatriz">Nuevo</button>
   </div>
 
   <!-- Tabla Manual -->
-  <div *ngIf="mostrarMatriz && datos.manual">
-    <form (ngSubmit)="prueba(h.value)" #h="ngForm">
+  <div class="mt-4" *ngIf="mostrarManual">
+    <form (ngSubmit)="ejecutarManual(h.value)" #h="ngForm">
       <h4 class="display-6">Matriz Aleatoria:</h4>
       <table class="table table-bordered jumbotron">
         <thead>
@@ -55,7 +55,7 @@
         <tbody>
           <tr *ngFor="let fila of arrayFilas, let col=index">
             <th>Fila {{col+1}}</th>
-            <td *ngFor="let obj of td.arrayRandom, let fil=index"><input (ngModel)="marrayRandom" type="number"
+            <td *ngFor="let obj of td.arrayDatos, let fil=index"><input (ngModel)="marrayRandom" type="number"
                 name="{{fil+1}}{{col}}" class="form-control col-xs-4
                 "></td>
           </tr>
@@ -69,61 +69,112 @@
 
 
 
+  <div class="mt-4" *ngIf="mostrarMatriz && !datos.manual">
+    <h4 class="display-6">Matriz Aleatoria:</h4>
 
-
-
-
-
-
-  <div *ngIf="mostrarMatriz && !datos.manual">
-    <form (ngSubmit)="ejecutarModelos(g.value)" #g="ngForm">
-      <h4 class="display-6">Matriz Aleatoria:</h4>
-      <table class="table table-bordered jumbotron">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let fila of arrayFilas">
-            <th>Fila {{fila}}</th>
-            <td *ngFor="let obj of td.arrayRandom">{{obj[fila]}}</td>
-          </tr>
-        </tbody>
-      </table>
-
-    </form>
+    <table class="table table-bordered jumbotron">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fila of arrayFilas">
+          <th>Fila {{fila}}</th>
+          <td *ngFor="let obj of td.arrayDatos">{{obj[fila]}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <h4 class="display-6" *ngIf="mostrarMatriz">Metodo de Lagrange:</h4>
-  <div *ngIf="mostrarMatriz">
-    <form (ngSubmit)="ejecutarModelos(g.value)" #g="ngForm">
-      <table class="table table-bordered jumbotron">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
-            <th>Resp. 1/{{resultadoLagrange}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let fila of arrayFilas">
-            <th>Fila {{fila}}</th>
-            <td *ngFor="let obj of td.arrayLagrnage">{{obj[fila]}}</td>
 
-          </tr>
-        </tbody>
-      </table>
-      <!-- <div class="col-md-6 mt-2">
-        <button type="submit" class="btn btn-primary mb-2">Submit</button>
-      </div> -->
-
-    </form>
-    <div class="alert alert-primary col-md-6" role="alert">
+  <div *ngIf="mostrarMetodo">
+    <h4 class="display-6">Metodo de Lagrange:</h4>
+    <table class="table table-bordered jumbotron">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+          <th>Resp. 1/{{resultadoLagrange}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fila of arrayFilas">
+          <th>Fila {{fila}}</th>
+          <td *ngFor="let obj of td.arrayLagrnage">{{obj[fila]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-primary col-6" role="alert">
       El valor maximo de Lagrange es {{maximoLagrange}} en la fila {{filaLagrange}}
     </div>
+  </div>
 
+  <div *ngIf="mostrarMetodo">
+    <h4 class="display-6">Metodo de Pesimismo:</h4>
+    <table class="table table-bordered jumbotron">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+          <th>Resp. 1/{{resultadoLagrange}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fila of arrayFilas">
+          <th>Fila {{fila}}</th>
+          <td *ngFor="let obj of td.arrayPesimista">{{obj[fila]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-primary col-6" role="alert">
+      El resultado mas optimo es el {{maximoPesimista}} en la fila {{filasPesimista}}
+    </div>
+  </div>
+
+  <div *ngIf="mostrarMetodo">
+    <h4 class="display-6">Metodo de Optimismo:</h4>
+    <table class="table table-bordered jumbotron">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+          <th>Resp. 1/{{resultadoLagrange}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fila of arrayFilas">
+          <th>Fila {{fila}}</th>
+          <td *ngFor="let obj of td.arrayOptimista">{{obj[fila]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-primary col-6" role="alert">
+      El resultado mas optimo es el {{maximoOptimista}} en la fila {{filasOptimista}}
+    </div>
+  </div>
+
+  <div *ngIf="mostrarMetodo">
+    <h4 class="display-6">Metodo de Hurwicz:</h4>
+    <table class="table table-bordered jumbotron">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+          <th>Resp. 1/{{resultadoLagrange}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fila of arrayFilas">
+          <th>Fila {{fila}}</th>
+          <td *ngFor="let obj of td.arrayHurwicz">{{obj[fila]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-primary col-6" role="alert">
+      El resultado mas optimo es el {{maximoOptimista}} en la fila {{filasOptimista}}
+    </div>
   </div>
 
 </div>

@@ -1,6 +1,9 @@
 export class TipoDatos {
-    arrayRandom: object[];
-    arrayLagrnage: object[];
     arrayManual: object[];
-
+    arrayDatos: object[];
+    arrayLagrnage: object[];
+    arrayPesimista: object[];
+    arrayOptimista: object[];
+    arrayHurwicz: object[];
+    
 }
