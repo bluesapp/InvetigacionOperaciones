@@ -1,5 +1,5 @@
 <div class="container mt-3">
-  <form (ngSubmit)="ejecutarRandom(f)" #f="ngForm" *ngIf="!mostrarMatriz">
+  <form (ngSubmit)="ejecutarRandom(f)" #f="ngForm"  *ngIf="mostrarForm">
     <div class="form-row align-items-center">
       <div class="col-md-3">
         <label># de Columnas</label>
@@ -38,13 +38,42 @@
 
 
   <div class="col-md-6 mt-2">
-    <button (click)="reacargarPagina()" type="button" class="btn btn-secondary" *ngIf="mostrarMatriz">Nuevo</button>
+    <button (click)="reacargarPagina()" type="button" class="btn btn-secondary"  *ngIf="!mostrarForm">Nuevo</button>
   </div>
 
   <!-- Tabla Manual -->
-  <div class="mt-4" *ngIf="mostrarManual">
+  <div *ngIf="mostrarManual">
+    <div class="card mt-2">
+      <div class="card-body">
+        <h3 class="card-title">Matriz Manual:</h3>
+        <form (ngSubmit)="ejecutarManual(h.value)" #h="ngForm">
+          <table class="table table-bordered jumbotron">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let fila of arrayFilas, let col=index">
+                <th>Fila {{col+1}}</th>
+                <td *ngFor="let obj of td.arrayDatos, let fil=index"><input (ngModel)="marrayRandom" type="number"
+                    name="{{fil+1}}{{col}}" class="form-control col-xs-4
+                    "></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="col-md-6 mt-2">
+            <button type="submit" class="btn btn-warning mb-2">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- <div class="mt-4" *ngIf="mostrarManual">
     <form (ngSubmit)="ejecutarManual(h.value)" #h="ngForm">
-      <h4 class="display-6">Matriz Aleatoria:</h4>
+      <h4 class="display-6">Matriz Manual:</h4>
       <table class="table table-bordered jumbotron">
         <thead>
           <tr>
@@ -65,11 +94,31 @@
         <button type="submit" class="btn btn-warning mb-2">Submit</button>
       </div>
     </form>
-  </div>
-
-
+  </div> -->
 
   <div class="mt-4" *ngIf="mostrarMatriz && !datos.manual">
+    <div class="card mt-2">
+      <div class="card-body">
+        <h3 class="card-title">Matriz Aleatoria:</h3>
+        <table class="table table-bordered jumbotron">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of arrayFilas">
+              <th>Fila {{fila}}</th>
+              <td *ngFor="let obj of td.arrayDatos">{{obj[fila]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="mt-4" *ngIf="mostrarMatriz && !datos.manual">
     <h4 class="display-6">Matriz Aleatoria:</h4>
 
     <table class="table table-bordered jumbotron">
@@ -86,11 +135,63 @@
         </tr>
       </tbody>
     </table>
+  </div> -->
+
+  <div *ngIf="mostrarMetodo">
+    <div class="card mt-2">
+      <div class="card-body">
+        <h3 class="card-title">Metodo de Lagrange:</h3>
+        <h4 class="card-subtitle mb-2 text-muted">El valor maximo de Lagrange es {{maximoLagrange}} en la fila
+          {{filaLagrange}}</h4>
+        <table class="table table-bordered jumbotron">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+              <th>Resp. 1/{{resultadoLagrange}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of arrayFilas">
+              <th>Fila {{fila}}</th>
+              <td *ngFor="let obj of td.arrayLagrnage">{{obj[fila]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
+
+  <!-- <div *ngIf="mostrarMetodo">
+  <div class="card mt-2">
+    <div class="card-body">
+      <h5 class="card-title">Metodo de Lagrange:</h5>
+      <h6 class="card-subtitle mb-2 text-muted">El valor maximo de Lagrange es {{maximoLagrange}} en la fila {{filaLagrange}}</h6>
+      <table class="table table-bordered jumbotron">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+            <th>Resp. 1/{{resultadoLagrange}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fila of arrayFilas">
+            <th>Fila {{fila}}</th>
+            <td *ngFor="let obj of td.arrayLagrnage">{{obj[fila]}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 
   <div *ngIf="mostrarMetodo">
-    <h4 class="display-6">Metodo de Lagrange:</h4>
+    <div class="alert alert-primary" role="alert">
+      <h1 class="display-6">Metodo de Lagrange:</h1>
+      El valor maximo de Lagrange es {{maximoLagrange}} en la fila {{filaLagrange}}
+    </div>
     <table class="table table-bordered jumbotron">
       <thead>
         <tr>
@@ -106,19 +207,44 @@
         </tr>
       </tbody>
     </table>
-    <div class="alert alert-primary col-6" role="alert">
-      El valor maximo de Lagrange es {{maximoLagrange}} en la fila {{filaLagrange}}
+  </div> -->
+
+  <div *ngIf="mostrarMetodo">
+    <div class="card mt-2">
+      <div class="card-body">
+        <h3 class="card-title">Metodo de Pesimismo:</h3>
+        <h4 class="card-subtitle text-muted">El resultado mas optimo es el {{maximoPesimista}} en la fila
+          {{filasPesimista}}</h4>
+        <table class="table table-bordered jumbotron">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of arrayFilas">
+              <th>Fila {{fila}}</th>
+              <td *ngFor="let obj of td.arrayPesimista">{{obj[fila]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="mostrarMetodo">
-    <h4 class="display-6">Metodo de Pesimismo:</h4>
+  <!-- <div *ngIf="mostrarMetodo">
+    <div class="alert alert-primary col-6" role="alert">
+      <h4 class="display-6">Metodo de Pesimismo:</h4>
+      El resultado mas optimo es el {{maximoPesimista}} en la fila {{filasPesimista}}
+    </div>
     <table class="table table-bordered jumbotron">
       <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
-          <th>Resp. 1/{{resultadoLagrange}}</th>
+          <th>Resultado</th>
         </tr>
       </thead>
       <tbody>
@@ -128,19 +254,42 @@
         </tr>
       </tbody>
     </table>
-    <div class="alert alert-primary col-6" role="alert">
-      El resultado mas optimo es el {{maximoPesimista}} en la fila {{filasPesimista}}
+  </div> -->
+
+
+  <div *ngIf="mostrarMetodo">
+    <div class="card mt-2">
+      <div class="card-body">
+        <h3 class="card-title">Metodo de Optimismo:</h3>
+        <h4 class="card-subtitle mb-2 text-muted">El resultado mas optimo es el {{maximoOptimista}} en la fila
+          {{filasOptimista}}</h4>
+        <table class="table table-bordered jumbotron">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of arrayFilas">
+              <th>Fila {{fila}}</th>
+              <td *ngFor="let obj of td.arrayOptimista">{{obj[fila]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="mostrarMetodo">
+  <!-- <div *ngIf="mostrarMetodo">
     <h4 class="display-6">Metodo de Optimismo:</h4>
     <table class="table table-bordered jumbotron">
       <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
-          <th>Resp. 1/{{resultadoLagrange}}</th>
+          <th>Resultado</th>
         </tr>
       </thead>
       <tbody>
@@ -153,16 +302,40 @@
     <div class="alert alert-primary col-6" role="alert">
       El resultado mas optimo es el {{maximoOptimista}} en la fila {{filasOptimista}}
     </div>
-  </div>
+  </div> -->
+
 
   <div *ngIf="mostrarMetodo">
+    <div class="card mt-2">
+      <div class="card-body">
+        <h3 class="card-title">Metodo de Hurwicz:</h3>
+        <table class="table table-bordered jumbotron">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of arrayFilas">
+              <th>Fila {{fila}}</th>
+              <td *ngFor="let obj of td.arrayHurwicz">{{obj[fila]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div *ngIf="mostrarMetodo">
     <h4 class="display-6">Metodo de Hurwicz:</h4>
     <table class="table table-bordered jumbotron">
       <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
-          <th>Resp. 1/{{resultadoLagrange}}</th>
+          <th>Resultado</th>
         </tr>
       </thead>
       <tbody>
@@ -172,9 +345,52 @@
         </tr>
       </tbody>
     </table>
+  </div> -->
+
+  <div *ngIf="mostrarMetodo">
+    <div class="card mt-2">
+      <div class="card-body">
+        <h3 class="card-title">Metodo de Savage:</h3>
+        <h4 class="card-subtitle mb-2 text-muted"></h4>
+        <table class="table table-bordered jumbotron">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of arrayFilas">
+              <th>Fila {{fila}}</th>
+              <td *ngFor="let obj of td.arraySavage">{{obj[fila]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div *ngIf="mostrarMetodo">
+    <h4 class="display-6">Metodo de Savage:</h4>
+    <table class="table table-bordered jumbotron">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" *ngFor="let columna of arrayColumnas">Col. {{columna}}</th>
+          <th>Resultado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fila of arrayFilas">
+          <th>Fila {{fila}}</th>
+          <td *ngFor="let obj of td.arrayOptimista">{{obj[fila]}}</td>
+        </tr>
+      </tbody>
+    </table>
     <div class="alert alert-primary col-6" role="alert">
       El resultado mas optimo es el {{maximoOptimista}} en la fila {{filasOptimista}}
     </div>
-  </div>
+  </div> -->
 
 </div>

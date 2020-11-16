@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { element } from 'protractor';
 import { datos } from './models/datos.model';
 import { TipoDatos } from './models/tipodatos.models';
 
@@ -18,6 +17,7 @@ export class AppComponent implements OnInit {
   mostrarMatriz: boolean = false;
   mostrarManual: boolean = false;
   mostrarMetodo: boolean = false;
+  mostrarForm: boolean = true;
   arrayColumnas: Array<number> = [];
   arrayFilas: Array<number> = [];
   numeroRandom: Array<number> = [];
@@ -52,10 +52,10 @@ export class AppComponent implements OnInit {
   ngOnInit() {
 
     this.datos.columnas = 3;
-    this.datos.filas = 4;
+    this.datos.filas = 3;
     this.datos.rangoMin = 1;
     this.datos.rangoMax = 100;
-    this.datos.coeficiente = 0.5;
+    this.datos.coeficiente = 0.65;
     this.datos.manual = false;
     this.maximoLagrange = 1;
     this.td.arrayDatos = [];
@@ -63,6 +63,8 @@ export class AppComponent implements OnInit {
   }
 
   ejecutarRandom(f: NgForm) {
+
+    this.mostrarForm = false;
 
     this.resultadoLagrange = f.value.columnas;
     this.nColumnas = 1 / f.value.columnas;
@@ -89,7 +91,7 @@ export class AppComponent implements OnInit {
       this.td.arrayDatos.push(obj);
 
     }
-    //Lagrange
+ 
     this.td.arrayLagrnage = [...this.td.arrayDatos]
     this.metotodoLagrange(this.td.arrayLagrnage, this.nColumnas);
 
@@ -104,6 +106,14 @@ export class AppComponent implements OnInit {
     //Hurwicz
     this.td.arrayHurwicz = [...this.td.arrayDatos];
     this.metodoHurwicz(this.td.arrayHurwicz, this.datos.coeficiente);
+
+    //Savage
+    this.td.arraySavage = [...this.td.arrayDatos];
+    this.metodoSavage(this.td.arraySavage);
+
+    //Savage
+    this.td.arraySavage = [...this.td.arrayDatos];
+    this.metodoSavage(this.td.arraySavage);
 
 
     if (f.value.manual) {
@@ -137,14 +147,34 @@ export class AppComponent implements OnInit {
     // console.log(this.td.arrayDatos);
 
     this.td.arrayLagrnage = [...this.td.arrayDatos]
-
     this.metotodoLagrange(this.td.arrayDatos, this.nColumnas);
+
+    //Pesimista
+    this.td.arrayPesimista = [...this.td.arrayDatos];
+    this.metodoPesimista(this.td.arrayPesimista);
+
+    //Optimista
+    this.td.arrayOptimista = [...this.td.arrayDatos];
+    this.metodoOptimista(this.td.arrayOptimista);
+
+    //Hurwicz
+    this.td.arrayHurwicz = [...this.td.arrayDatos];
+    this.metodoHurwicz(this.td.arrayHurwicz, this.datos.coeficiente);
+
+    //Savage
+    this.td.arraySavage = [...this.td.arrayDatos];
+    this.metodoSavage(this.td.arraySavage);
+
+
+
+
     this.mostrarMetodo = true;
 
 
   }
 
   metotodoLagrange(arrayData, nCol) {
+    console.log(arrayData);
 
     const sumaObject = arrayData.reduce((a, b) => {
 
@@ -160,11 +190,12 @@ export class AppComponent implements OnInit {
     this.maximoLagrange = Math.max(...this.array1)
     this.filaLagrange = this.array1.indexOf(this.maximoLagrange) + 1;
     this.td.arrayLagrnage.push(sumaObject)
-    // console.log(this.td.arrayLagrnage);
+    console.log(this.td.arrayLagrnage);
 
   }
 
   metodoPesimista(arrayDataPesimista) {
+    console.log(arrayDataPesimista);
 
     let minCols = {}
     let fila = []
@@ -184,29 +215,29 @@ export class AppComponent implements OnInit {
     this.arrayNumMin = menor;
 
 
-    arrayDataPesimista.push(minCols);
-    // console.log(arrayDataPesimista);
-    // this.td.arrayPesimista = arrayDataPesimista
+    this.td.arrayPesimista.push(minCols);
+    console.log(arrayDataPesimista);
+    this.td.arrayPesimista = arrayDataPesimista
   }
 
 
-  metodoOptimista(arrayData) {
+  metodoOptimista(arrayDataOpt) {
 
     let maxCols = {}
     let fila = []
-    arrayData.map((c, i) => {
+    arrayDataOpt.map((c, i) => {
       fila = Object.values(c)
       let max = Math.max(...fila)
-      arrayData[i]['max'] = max;
+      arrayDataOpt[i]['max'] = max;
       for (let x = 0; x < fila.length; x++) {
         if (!maxCols[(x + 1).toString()] || fila[x] > maxCols[(x + 1).toString()]) maxCols[(x + 1).toString()] = fila[x];
       }
     })
 
-    arrayData.push(maxCols);
-    this.td.arrayOptimista = arrayData;
-    console.log(this.td.arrayOptimista);
-    
+    arrayDataOpt.push(maxCols);
+    this.td.arrayOptimista = arrayDataOpt;
+    // console.log(this.td.arrayOptimista);
+
     let mayor = []
     mayor = Object.values(maxCols);
     this.maximoOptimista = Math.max(...mayor);
@@ -216,10 +247,7 @@ export class AppComponent implements OnInit {
 
   metodoHurwicz(arrayH, coe) {
 
-
     this.arrayNumMax.pop();
-
-
     let NunMax = this.arrayNumMax;
     let NunMin = this.arrayNumMin;
 
@@ -227,18 +255,57 @@ export class AppComponent implements OnInit {
 
     for (let i = 0; i < NunMax.length; i++) {
 
-      obj[i+1] = parseFloat(((NunMax[i] * coe) + (NunMin[i] * (-1 * coe))).toFixed(2));
+      obj[i + 1] = parseFloat(((NunMax[i] * coe + NunMin[i] * (1 - coe))).toFixed(2));
     }
-
-
 
     arrayH.push(obj);
 
     this.td.arrayHurwicz = arrayH;
 
-    console.log(this.td.arrayHurwicz);
   }
 
+
+  metodoSavage(arraySavage) {
+
+    const arraSav2 = [...arraySavage]
+
+    console.log(arraSav2);
+
+
+    let array = []
+    arraySavage.map((x) => {
+
+      let arrayValues = []
+      arrayValues = Object.values(x);
+
+      let ff = Math.max(...arrayValues);
+      let obr = {}
+      arrayValues.map((x, i) => {
+        obr[i] = ff - x
+      });
+
+      array.push(obr)
+    });
+
+    console.log(array);
+
+    let maxCols = {}
+    let fila = []
+    array.map((c, i) => {
+      fila = Object.values(c)
+      let max = Math.max(...fila)
+      array[i]['max'] = max;
+      for (let x = 0; x < fila.length; x++) {
+        if (!maxCols[(x + 1).toString()] || fila[x] > maxCols[(x + 1).toString()]) maxCols[(x + 1).toString()] = fila[x];
+      }
+    })
+
+    arraSav2.push(maxCols);
+    this.td.arraySavage = arraSav2;
+    console.log(this.td.arraySavage);
+
+
+  }
 
   getRandom(min, max) {
     return Math.floor(Math.random() * (max - min) + min);

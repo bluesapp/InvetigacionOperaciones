@@ -5,5 +5,7 @@ export class TipoDatos {
     arrayPesimista: object[];
     arrayOptimista: object[];
     arrayHurwicz: object[];
+    arraySavage: object[];
+    datosGlobales: object[];
     
 }
